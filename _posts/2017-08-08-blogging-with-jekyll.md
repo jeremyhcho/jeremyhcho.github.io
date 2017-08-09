@@ -1,0 +1,75 @@
+---
+layout: post
+title: npm init
+---
+
+I wanted to create a Node/Express project that proxies `/api/**` routes to my Phoenix app
+running on `http://localhost:4000` with HMR. Using [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware) alongside [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) seemed to be the answer for most, but what seems to be the norm
+for every developer - it wasn't working for me. Here's how I got around it:
+
+1. Set up a proxy server with [http-proxy](https://github.com/nodejitsu/node-http-proxy).
+2. Configure `devServer` in `webpack.config.js` to use a proxy.
+3. Run `node` alongside `webpack-dev-server` in one command.
+
+### Proxying Requests to the API
+I needed to tell Express to proxy all incoming `/api` routes to `http://localhost:4000`
+which is the default port that Phoenix runs on.
+
+
+{% highlight js %}
+const express = require('express')
+const app = express()
+
+const httpProxy = require('http-proxy')
+const proxy = httpProxy.createProxyServer()
+
+app.all('/api/*', (req, res) => {
+  proxy.web(req, res, {
+    target: 'http://localhost:4000'
+  })
+})
+{% endhighlight %}
+
+That sets up my Express proxy up, but my dev server runs on port 8080 (by default)
+which is different from the port that I had set up my Express server on. I needed to
+tell my dev server to proxy any incoming requests to my Express server.
+
+## Configure `devServer` in `webpack.config.js`
+In order to accomplish that, here's the setting I used for `devServer` inside my Webpack configs.
+
+{% highlight js %}
+devServer: {
+  hot: true,
+  historyApiFallback: true,
+  inline: true,
+  contentBase: path.resolve(__dirname, 'dist'),
+  publicPath: '/',
+  filename: 'bundle.js',
+  proxy: {
+    '*': 'http://localhost:3000'
+  },
+  stats: {
+    colors: true
+  }
+}
+{% endhighlight %}
+
+The important part about this is the `proxy` key. This configuration tells my dev server
+to proxy every request to Express which is running on port 3000.
+
+## Running the Script
+In order to run both servers in one script, I created a couple scripts in my `package.json`.
+
+{% highlight js %}
+"scripts": {
+  "start": "node ./server.js | npm run dev-server",
+  "dev-server": "webpack-dev-server --content-base=www --inline --hot"
+}
+{% endhighlight %}
+
+Now all you have to do is run `$ npm run start` to boot up your app.
+
+
+## Conclusion
+Setting up a Node project is always annoying.. Maybe I should use this as my
+boilerplate.
