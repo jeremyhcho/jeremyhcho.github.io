@@ -14,7 +14,7 @@ permalink:        pretty
 # Setup
 title:            Today I Learned
 tagline:          'Jeremy Cho'
-description:      'A journey to document what was unknown before this day.'
+description:      'A journey to document what was unknown... before this day.'
 baseurl:          /
 
 paginate:         5
