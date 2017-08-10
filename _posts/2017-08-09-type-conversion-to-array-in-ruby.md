@@ -62,7 +62,7 @@ irb(main):01:0> Array({ foo: 'bar' })
 Here's where the `Array#wrap` method comes in handy.
 
 ```
-irb(main):01:0> Array({ foo: 'bar' })
+irb(main):01:0> Array.wrap({ foo: 'bar' })
 => [{:foo => "bar"}]
 ```
 
