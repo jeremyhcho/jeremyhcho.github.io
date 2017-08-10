@@ -1,6 +1,5 @@
 plugins:
   - jekyll-paginate
-  - redcarpet
   - jekyll-gist
   - pygments.rb
 
