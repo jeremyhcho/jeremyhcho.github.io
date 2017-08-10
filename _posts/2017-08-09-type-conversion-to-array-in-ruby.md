@@ -66,6 +66,8 @@ irb(main):01:0> Array({ foo: 'bar' })
 => [{:foo => "bar"}]
 ```
 
+**NOTE**: This method is only available in Rails!
+
 It also covers all the other cases like `nil`, strings, and integers.
 
 ### After Thoughts
