@@ -4,7 +4,6 @@ plugins:
   - pygments.rb
 
 # Dependencies
-markdown:         redcarpet
 highlighter:      pygments
 
 # Permalinks
